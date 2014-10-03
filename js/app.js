@@ -1539,21 +1539,7 @@ app = Sammy('#main', function (sam) {
 /**
  * Translations
  */
-$.getJSON('locales/en.json', function(data){
-    y18n.translations['en'] = data;
-    y18n.translateInlineHTML();
-});
-
-// User defined language
-if (window.navigator && window.navigator.language) {
-    y18n.locale = window.navigator.language.substr(0, 2);
-    if (y18n.locale !== 'en') {
-        $.getJSON('locales/'+ y18n.locale +'.json', function(data){
-            y18n.translations[y18n.locale] = data;
-            y18n.translateInlineHTML();
-        });
-    }
-}
+y18n.loadLocales();
 
 
 /**

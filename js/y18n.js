@@ -6,8 +6,15 @@
         defaultLocale: "en",
         locale: "en",
         placeholder: /(?:\{\{|%\{)(.*?)(?:\}\}?)/gm,
-        translations: {},
+        translations: {
+          'en' : {}
+        },
     }
+
+    var concatObject= function (o1,o2) {
+        for(var k in o2) o1[k]=o2[k];
+    }
+
 
     /**
      * Initialization
@@ -16,6 +23,11 @@
         // Merge options with defaults.
         for (var key in defaultOptions) {
             y18n[key] = (typeof y18n[key] !== 'undefined') ? y18n[key] : defaultOptions[key];
+        }
+
+        // User defined locale
+        if (window.navigator && window.navigator.language) {
+            y18n.locale = window.navigator.language.substr(0, 2);
         }
     }
     y18n.init();
@@ -40,6 +52,25 @@
           el.title = y18n.translate(el.getAttribute('data-y18n-title'))
         }
       );
+    }
+
+    y18n.loadLocales = function(basePath) {
+      // Default
+      basePath = basePath || '';
+
+      $.getJSON(basePath+'locales/'+y18n.defaultLocale+'.json', function(data){
+        concatObject(y18n.translations[y18n.defaultLocale], data);
+        y18n.translateInlineHTML();
+      });
+
+      // User defined language
+      if (y18n.locale !== 'en') {
+        y18n.translations[y18n.locale] = y18n.translations[y18n.locale] || {}
+        $.getJSON(basePath+'locales/'+ y18n.locale +'.json', function(data){
+          concatObject(y18n.translations[y18n.locale], data);
+          y18n.translateInlineHTML();
+        });
+      }
     }
 
     /**
