@@ -1556,7 +1556,31 @@ $(document).ready(function () {
     /**
      * Application
      */
-    app.run('#/');
+    $.getJSON( "modules/list.json", function( modules ) {
+
+        /**
+        * Application
+        */
+        var scripts = [];
+        $.each( modules, function( key, val ) {
+            // Require module
+            scripts.push('modules/'+key+'/main');
+
+            // Load module locales
+            y18n.loadLocales('modules/'+key+'/');
+        });
+
+        requirejs(scripts,function () {
+            // Use module
+           $.each( modules, function( key, val ) {
+               app.use(window[val],key);
+           });
+
+           // Run app
+           app.run('#/');
+        });
+
+    });
 
     // Fixes for sliding effect
     $('#slider-container').width(2*$('#slider').width() +'px');
