@@ -257,7 +257,12 @@ app = Sammy('#main', function (sam) {
         // Render view (cross-browser)
         view: function (view, data, callback) {
             callback = typeof callback !== 'undefined' ? callback : function() {};
-            rendered = this.render('views/'+ view +'.ms', data);
+            basePath='';
+            if (typeof view !== 'string') {
+                basePath = 'modules/'+view[0]+'/';
+                view = view[1];
+            }
+            rendered = this.render(basePath+'views/'+view+'.ms', data);
 
             enableSlide = true; // Change to false to disable animation
 
